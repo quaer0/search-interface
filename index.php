@@ -21,20 +21,26 @@
 		</form>
 	<?php
 	    $resp = $_GET['q']; 
-	    $query = mysql_query("SELECT id FROM test1 where MATCH('%$resp%') LIMIT 0,50");
-	    $num_rows = mysql_num_rows($query);
-	    $art_num=0;
-	    while($row = mysql_fetch_array($query)){
-		$art_num = $art_num + 1;
-		$id = $row['id'];
-		$result = pg_query($dbcon, "SELECT title FROM article_main WHERE id=$id");
-		while ($fixrow = pg_fetch_row($result)) {
-		    echo '<h3>' . $art_num . '.' . $fixrow[0] . '</h3><br />';
+	    if (!isset($resp)) {
+		echo '';
+	    } else {
+		$query = mysql_query("SELECT id FROM test1 where MATCH('%$resp%') LIMIT 0,50");
+		$num_rows = mysql_num_rows($query);
+		$art_num=0;
+		while($row = mysql_fetch_array($query)){
+		    $art_num = $art_num + 1;
+		    $id = $row['id'];
+		    $result = pg_query($dbcon, "SELECT title FROM article_main WHERE id=$id");
+		    while ($fixrow = pg_fetch_row($result)) {
+			echo '<h3><a href="' . $art_num . '.php">' . $art_num . '.' . substr($fixrow[0], 0, 250) . '</h3><br />';
+		    }
 		}
 	    }
 	?>
 	</body>
 </html>
 <?php
+    } else {
+	header('Location: index.php');
     }
 ?>
