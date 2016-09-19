@@ -1,0 +1,1 @@
+gcc main.cpp -o refresh_index

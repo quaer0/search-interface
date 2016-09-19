@@ -9,43 +9,37 @@
 <html>
 	<head>
 		<meta charset="utf-8">
-		 <style>
-			aside {
-				padding: 10px;
-				width: 200px;
-				float: right;
-			}
-			section {
-				margin-right: 240px;
-				display: block;
-			}
-		</style>
 		<meta http-equiv='X_UA-Compatible' content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
 		<link href="bootstrap/css/dataTables.bootstrap.min.css" rel="stylesheet">
 		<title>Поиск материалов</title>
 		<link rel="stylesheet" href="css/style.css" />
+		<style>
+			tab4 { padding-left: 8em; }
+		</style>
 		<script type="text/javascript">
 		</script>
 	</head>
 	<body>
-	<header>
-	</header>
+	<div class="container-fluid">
 	<div class="row">
-		<div class="col-sm-10">
+		<div class="col-sm-2">
+		</div>
+		<div class="col-sm-8">
 		<div style="padding-top : 25px;">
 		</div>
 		<form action="index.php" method="GET" id="searchForm" />
 			<input type="text" name="q" id="searchBar" placeholder="" value="<?php echo $_GET['q'] ?>" maxlength="50" autocomplete="off" />
 			<input type="submit" id="searchBtn" value="Найти" />
 		</form>
+		<div style="padding-top : 25px;">
+		</div>
 	<?php
 	    $resp = $_GET['q']; 
 	    if (!isset($resp)) {
 		echo '';
 	    } else {
-	//	echo '<div class="container">';
 		echo '<table class="table" id="searchTable">';
 		echo '<thead style="display: none;">';
 		echo '<tr>';
@@ -120,20 +114,11 @@
 	</script>
 	</div>
 	<div class="col-sm-2">
-		<!-- Надо как-то пробрасывать это меню на остальные страницы, которые в нем нуждаются -->
-		<div class="container">
-			<div class="row">
-				<div class="col-md-3">
-					<ul class="nav nav-pills nav-stacked">
-						<li class="active"><a href="#"><i class="fa fa-search fa-fw"></i>Поиск</a></li>
-						<li><a href="pages/indexing.php"><i class="fa fa-index fa-fw"></i>Индексация</a></li>
-						<li><a href="#"><i class="fa fa-stat fa-fw"></i>Статистика</a></li>
-						<li><a href="#"><i class="fa fa-upload fa-fw"></i>Пополнение</a></li>
-						<li><a href="#"><i class="fa fa-project fa-fw"></i>О Проекте</a></li>
-					</ul>
-				</div>
-			</div>
-		</div>
+		<?php 
+		    $page = 'page1'; 
+			include 'components/menu.php'; 
+		?>	
+	</div>
 	</div>
 	</div>
 	</body>
