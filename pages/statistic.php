@@ -7,6 +7,7 @@
 		<link rel="stylesheet" href="../css/style.css" />
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+		<link href="/bootstrap/css/dataTables.bootstrap.min.css" rel="stylesheet">
 		<script type="text/javascript">
 		</script>
 </head>
@@ -17,9 +18,17 @@
 		<div class="col-sm-2">
 		</div>
 		<div class="col-sm-8">
-		<div style="padding-top : 25px;">
-		</div>
-		<p>Статистика загрузки материалов:</p>
+			<div style="padding-top : 25px;">
+		</div>	
+		<ul class="nav nav-tabs">
+		<li class="active"><a data-toggle="tab" href="#panel1">Перископ</a></li>
+        <li><a data-toggle="tab" href="#panel2">РКТ</a></li>
+		</ul>
+				
+		<div class="tab-content">
+			<div id="panel1" class="tab-pane fade in active">
+
+		<p>Статистика загрузки материалов журнала Перископ2:</p>
 		<table id="statTable" class="table table-striped table-bordered">
 		<thead>
 		<tr>
@@ -28,18 +37,44 @@
 		</tr>
 		</thead>
 		<tbody>
-		<?php
-			$dbcon = pg_connect("host=127.0.0.1 port=5432 dbname=npo_inner_texts user=postgres") or die ("Couldn't connect to PgSQL Database.");
-			$result = pg_query($dbcon, "SELECT COUNT(*), load_date FROM load_article_stat group by load_date order by load_date desc;");
-		    while ($fixrow = pg_fetch_row($result)) {
-				echo '<tr>';
-				echo '<td>'.$fixrow[0].'</td>';
-				echo '<td>'.$fixrow[1].'</td>';
-				echo '</tr>';
-			}
-		?>
 		</tbody>
 		</table>
+			</div>
+			<div id="panel2" class="tab-pane fade">
+		<p>Статистика загрузки материалов журнала РКТ:</p>
+			</div>
+		</div>
+		
+		
+		<script src="/bootstrap/js/jquery.js"></script>
+	<script src="/bootstrap/js/bootstrap.min.js"></script>
+	<script src="/bootstrap/js/jquery.dataTables.min.js"></script>
+	<script src="/bootstrap/js/dataTables.bootstrap.min.js"></script> 
+    <script type="text/javascript" src="/bootstrap/js/moment-with-locales.min.js"></script>
+	<script type="text/javascript" src="/bootstrap/js/bootstrap-select.min.js"></script>
+	<script>
+	$('#statTable').DataTable( {
+		searching: false,
+		ordering: false,
+		"bLengthChange": false,
+		processing: false,
+		"bAutoWidth": false,
+		pageLength: 50,
+		"bProcessing": true,
+		"bServerSide": true,
+		"sAjaxSource": "/scripts/stat_query.php",  
+		pagingType: 'simple_numbers',
+		language: {
+				paginate: {
+					first:    'В начало',
+					previous: 'Предыдущий',
+					next:     'Дальше',
+					last:     'Последний'
+				},
+				"info": "Страница _PAGE_ из _PAGES_"
+		}	
+    } );
+	</script>
 		</div>
 		<div class="col-sm-2">
 		<?php 

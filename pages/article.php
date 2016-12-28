@@ -22,7 +22,7 @@
 			<?php
 				$dbcon = pg_connect("host=127.0.0.1 port=5432 dbname=npo_inner_texts user=postgres") or die ("Couldn't connect to PgSQL Database.");
 				$id = $_GET['id'];
-				$result = pg_query($dbcon, "SELECT art_body FROM articles_html WHERE id=$id");
+				$result = pg_query($dbcon, "SELECT art_body FROM articles_html WHERE art_id=$id");
 				while ($fixrow = pg_fetch_row($result)) {
 					$cl = new SphinxClient ();
 					$cl->setServer("localhost",9312);

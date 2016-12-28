@@ -13,6 +13,8 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
 		<link href="bootstrap/css/dataTables.bootstrap.min.css" rel="stylesheet">
+		<link href="bootstrap/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
+		<link href="bootstrap/css/bootstrap-select.min.css" rel="stylesheet">
 		<title>Поиск материалов</title>
 		<link rel="stylesheet" href="css/style.css" />
 		<style>
@@ -25,6 +27,15 @@
 	<div class="container-fluid">
 	<div class="row">
 		<div class="col-sm-2">
+		<div style="padding-top : 25px;">
+			<label>Расширенные настройки поиска</label>
+		</div>
+		<div>
+			<label class="switch">
+				<input type="checkbox" onchange="sel_change()" <?php echo $_COOKIE["add_sett"] ?> > 
+				<div class="slider round"></div>
+			</label>
+		</div>
 		</div>
 		<div class="col-sm-8">
 		<div style="padding-top : 25px;">
@@ -33,6 +44,62 @@
 			<input type="text" name="q" id="searchBar" placeholder="" value="<?php echo $_GET['q'] ?>" maxlength="50" autocomplete="off" />
 			<input type="submit" id="searchBtn" value="Найти" />
 		</form>
+		<div style="text-align: center; padding-top : 10px; visibility: hidden;" id="sett_box">
+			<div class="settings_block">
+				<div class="container-fluid">
+				<div class='row'>
+					<div class='col-sm-6'>
+						<label style="text-align: left; float: left;">Временной интервал:</label>
+					</div>
+					<div class='col-sm-3'>
+						<label style="text-align: left; float: left;">Сортировать по:</label>
+					</div>
+					<div class='col-sm-3'>	
+						    <div class="button-group">
+								<button type="button" class="btn btn-block btn-default btn-sm dropdown-toggle btn-primary" data-toggle="dropdown">
+									<span>Источники</span>
+									<span class="caret"></span>
+								</button>
+								<ul class="dropdown-menu">
+									<li><a href="#" class="small" data-value="option1" tabIndex="-1"><input type="checkbox" checked/>&nbsp;РКТ</a></li>
+									<li><a href="#" class="small" data-value="option2" tabIndex="-1"><input type="checkbox" checked/>&nbsp;Перископ</a></li>
+								</ul>
+							</div>
+					</div>
+				</div>
+				<div class='row'>
+					<div class='col-sm-3'>
+						<div class="form-group">
+						<div class='input-group date' id='datetimepicker1'>
+						<input type='text' class="form-control" value="01.01.1970" />
+						<span class="input-group-addon">
+						<span class="glyphicon glyphicon-calendar"></span>
+						</span>
+						</div>
+						</div>
+					</div>
+					<div class='col-sm-3'>
+						<div class="form-group">
+						<div class='input-group date' id='datetimepicker2'>
+						<input type='text' class="form-control" value="<?php echo date('d.m.Y'); ?>" />
+						<span class="input-group-addon">
+						<span class="glyphicon glyphicon-calendar"></span>
+						</span>
+						</div>
+						</div>
+					</div>
+					<div class='col-sm-3'>
+						<select class="selectpicker" data-width="100%">
+							<option>Дате</option>
+							<option>Релевантности</option>
+						</select>
+					</div>
+					<div class='col-sm-3'>	
+					</div>
+				</div>
+				</div>
+			</div>
+		</div>
 		<div style="padding-top : 25px;">
 		</div>
 	<?php
@@ -75,7 +142,11 @@
 	<script src="bootstrap/js/jquery.js"></script>
 	<script src="bootstrap/js/bootstrap.min.js"></script>
 	<script src="bootstrap/js/jquery.dataTables.min.js"></script>
-	<script src="bootstrap/js/dataTables.bootstrap.min.js"></script>
+	<script src="bootstrap/js/dataTables.bootstrap.min.js"></script> 
+    <script type="text/javascript" src="bootstrap/js/moment-with-locales.min.js"></script>
+    <script type="text/javascript" src="bootstrap/js/bootstrap-datetimepicker.min.js"></script>
+	<script type="text/javascript" src="bootstrap/js/bootstrap-combobox.js"></script>
+	<script type="text/javascript" src="bootstrap/js/bootstrap-select.min.js"></script>
 	<script>
 		/*$('.has-clear input[type="text"]').on('input propertychange', function() {
 		var $this = $(this);
@@ -87,6 +158,73 @@
 			$(this).siblings('input[type="text"]').val('')
 			.trigger('propertychange').focus();
 	});*/
+	</script>
+	<script type="text/javascript">
+	$(function () {
+		$('.selectpicker').selectpicker({
+		style: 'btn-primary',
+		size: 4
+		});
+	});	
+	</script>
+	<script type="text/javascript">
+		function setCookie(cname,cvalue,exdays) {
+			var d = new Date();
+			d.setTime(d.getTime() + (exdays*24*60*60*1000));
+			var expires = "expires=" + d.toGMTString();
+			document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+		}
+	
+		function sel_change() {
+			if (document.getElementById('sett_box').style.visibility=='visible') {
+				document.getElementById('sett_box').style.visibility='hidden';
+				setCookie("add_sett", "checked", 30);
+			} else { 
+				document.getElementById('sett_box').style.visibility='visible';
+				setCookie("add_sett", "", 30);
+			}	
+		}
+	</script>
+	<script type="text/javascript">
+            $(function () {
+                $('#datetimepicker1').datetimepicker(
+					{
+						pickTime: false,
+						language: 'ru'
+					}
+				);
+				$('#datetimepicker2').datetimepicker(
+					{
+						pickTime: false,
+						language: 'ru'
+					}
+				);
+				$("#datetimepicker1").on("dp.change",function (e) {
+					$("#datetimepicker2").data("DateTimePicker").setMinDate(e.date);
+				});
+				$("#datetimepicker2").on("dp.change",function (e) {
+					$("#datetimepicker1").data("DateTimePicker").setMaxDate(e.date);
+				});
+            });
+    </script>
+	<script type="text/javascript">
+		var options = [];
+		$( '.dropdown-menu a' ).on( 'click', function( event ) {
+			var $target = $( event.currentTarget ),
+			val = $target.attr( 'data-value' ),
+			$inp = $target.find( 'input' ),
+			idx;
+		if ( ( idx = options.indexOf( val ) ) > -1 ) {
+			options.splice( idx, 1 );
+			setTimeout( function() { $inp.prop( 'checked', false ) }, 0);
+		} else {
+			options.push( val );
+			setTimeout( function() { $inp.prop( 'checked', true ) }, 0);
+		}
+		$( event.target ).blur();
+		console.log( options );
+		return false;
+		});
 	</script>
 	<script>
 	$('#searchTable').DataTable( {
