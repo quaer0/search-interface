@@ -2,8 +2,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <?php
     if ($_GET['q'] !== '') {
-	/*$con = mysql_connect('127.0.0.1:9306') or die ("Couldn't connect to Sphinx engine.");
-	$dbcon = pg_connect("host=127.0.0.1 port=5432 dbname=npo_inner_texts user=postgres") or die ("Couldn't connect to PgSQL Database.");*/
+	//$con = mysql_connect('127.0.0.1:9306') or die ("Couldn't connect to Sphinx engine.");
+	//$dbcon = pg_connect("host=127.0.0.1 port=5432 dbname=npo_inner_texts user=postgres") or die ("Couldn't connect to PgSQL Database.");
 ?>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <html>
@@ -32,7 +32,7 @@
 		</div>
 		<div>
 			<label class="switch">
-				<input type="checkbox" onchange="sel_change()" <?php echo $_COOKIE["add_sett"] ?> > 
+				<input type="checkbox" onchange="sel_change()" <?php echo $_COOKIE["add_sett"] ?> >
 				<div class="slider round"></div>
 			</label>
 		</div>
@@ -44,7 +44,9 @@
 			<input type="text" name="q" id="searchBar" placeholder="" value="<?php echo $_GET['q'] ?>" maxlength="50" autocomplete="off" />
 			<input type="submit" id="searchBtn" value="Найти" />
 		</form>
-		<div style="text-align: center; padding-top : 10px; visibility: hidden;" id="sett_box">
+    <div style="padding-top : 15px;">
+		</div>
+		<div style="text-align: center; padding-top : 10px; <?php if ($_COOKIE["add_sett"]=='') echo 'display: none;' ?>" id="sett_box">
 			<div class="settings_block">
 				<div class="container-fluid">
 				<div class='row'>
@@ -54,15 +56,16 @@
 					<div class='col-sm-3'>
 						<label style="text-align: left; float: left;">Сортировать по:</label>
 					</div>
-					<div class='col-sm-3'>	
+					<div class='col-sm-3'>
 						    <div class="button-group">
 								<button type="button" class="btn btn-block btn-default btn-sm dropdown-toggle btn-primary" data-toggle="dropdown">
 									<span>Источники</span>
 									<span class="caret"></span>
 								</button>
 								<ul class="dropdown-menu">
-									<li><a href="#" class="small" data-value="option1" tabIndex="-1"><input type="checkbox" checked/>&nbsp;РКТ</a></li>
-									<li><a href="#" class="small" data-value="option2" tabIndex="-1"><input type="checkbox" checked/>&nbsp;Перископ</a></li>
+									<li><a href="#" class="small" data-value="option1" tabIndex="-1"><input id="cb_s_1" type="checkbox" onclick="handleClick1()"; <?php if ($_COOKIE["source_id"]=='2') echo 'checked' ?> />&nbsp;РКТ</a></li>
+									<li><a href="#" class="small" data-value="option2" tabIndex="-1"><input id="cb_s_2" type="checkbox" onclick="handleClick2()"; <?php if ($_COOKIE["source_id"]=='1') echo 'checked' ?> />&nbsp;Перископ</a></li>
+									<li><a href="#" class="small" data-value="option3" tabIndex="-1"><input id="cb_s_3" type="checkbox" onclick="handleClick3()"; <?php if ($_COOKIE["source_id"]=='3') echo 'checked' ?> />&nbsp;Другие материалы</a></li>
 								</ul>
 							</div>
 					</div>
@@ -71,7 +74,7 @@
 					<div class='col-sm-3'>
 						<div class="form-group">
 						<div class='input-group date' id='datetimepicker1'>
-						<input type='text' class="form-control" value="01.01.1970" />
+						<input id="d1" type='text' class="form-control" value="01.01.1970" />
 						<span class="input-group-addon">
 						<span class="glyphicon glyphicon-calendar"></span>
 						</span>
@@ -81,7 +84,7 @@
 					<div class='col-sm-3'>
 						<div class="form-group">
 						<div class='input-group date' id='datetimepicker2'>
-						<input type='text' class="form-control" value="<?php echo date('d.m.Y'); ?>" />
+						<input id="d2" type='text' class="form-control" value="<?php echo date('d.m.Y'); ?>" />
 						<span class="input-group-addon">
 						<span class="glyphicon glyphicon-calendar"></span>
 						</span>
@@ -89,12 +92,12 @@
 						</div>
 					</div>
 					<div class='col-sm-3'>
-						<select class="selectpicker" data-width="100%">
-							<option>Дате</option>
-							<option>Релевантности</option>
+						<select class="selectpicker" data-width="100%" onchange="sortclick(this)" >
+							<option <?php if ($_COOKIE["sort_id"]==0) echo 'selected="selected"' ?> >Дате</option>
+							<option <?php if ($_COOKIE["sort_id"]==1) echo 'selected="selected"' ?> >Релевантности</option>
 						</select>
 					</div>
-					<div class='col-sm-3'>	
+					<div class='col-sm-3'>
 					</div>
 				</div>
 				</div>
@@ -103,7 +106,7 @@
 		<div style="padding-top : 25px;">
 		</div>
 	<?php
-	    $resp = $_GET['q']; 
+	    $resp = $_GET['q'];
 	    if (!isset($resp)) {
 		echo '';
 	    } else {
@@ -119,7 +122,7 @@
 		echo '</tr>';
 		echo '</tfoot>';
 		echo '<tbody>';
-		
+
 	/*	$query = mysql_query("SELECT id FROM test1 where MATCH('%$resp%') LIMIT 0,50");
 		$num_rows = mysql_num_rows($query);
 		$art_num=0;
@@ -132,7 +135,7 @@
 				echo '<td><a href="' . $id . '.php" style="text-decoration:none;" >' . $art_num . '.' . substr($fixrow[0], 0, 250) . '</td>';
 				echo '</tr>';
 			}
-		} */	
+		} */
 		echo '</tbody>';
 		echo '</table>';
 		echo '<p><br /></p>';
@@ -142,7 +145,7 @@
 	<script src="bootstrap/js/jquery.js"></script>
 	<script src="bootstrap/js/bootstrap.min.js"></script>
 	<script src="bootstrap/js/jquery.dataTables.min.js"></script>
-	<script src="bootstrap/js/dataTables.bootstrap.min.js"></script> 
+	<script src="bootstrap/js/dataTables.bootstrap.min.js"></script>
     <script type="text/javascript" src="bootstrap/js/moment-with-locales.min.js"></script>
     <script type="text/javascript" src="bootstrap/js/bootstrap-datetimepicker.min.js"></script>
 	<script type="text/javascript" src="bootstrap/js/bootstrap-combobox.js"></script>
@@ -160,12 +163,26 @@
 	});*/
 	</script>
 	<script type="text/javascript">
+	function handleClick1() {
+		setCookie("source_id", "2", 30);
+	}
+	function handleClick2() {
+		setCookie("source_id", "1", 30);
+	}
+	function handleClick3() {
+		setCookie("source_id", "3", 30);
+	}
+	function sortclick(d) {
+	 	setCookie("sort_id", d.selectedIndex, 30);
+	}
+	</script>
+	<script type="text/javascript">
 	$(function () {
 		$('.selectpicker').selectpicker({
 		style: 'btn-primary',
 		size: 4
 		});
-	});	
+	});
 	</script>
 	<script type="text/javascript">
 		function setCookie(cname,cvalue,exdays) {
@@ -174,16 +191,16 @@
 			var expires = "expires=" + d.toGMTString();
 			document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
 		}
-	
+
 		function sel_change() {
-			if (document.getElementById('sett_box').style.visibility=='visible') {
-				document.getElementById('sett_box').style.visibility='hidden';
+			if (document.getElementById('sett_box').style.display=='none') {
+				document.getElementById('sett_box').style.display='inline';
 				setCookie("add_sett", "checked", 30);
-			} else { 
-				document.getElementById('sett_box').style.visibility='visible';
+			} else {
+				document.getElementById('sett_box').style.display='none';
 				setCookie("add_sett", "", 30);
-			}	
-		}
+			}
+    	}
 	</script>
 	<script type="text/javascript">
             $(function () {
@@ -222,11 +239,32 @@
 			setTimeout( function() { $inp.prop( 'checked', true ) }, 0);
 		}
 		$( event.target ).blur();
-		console.log( options );
 		return false;
 		});
 	</script>
-	<script>
+	<script>	
+
+	function getCookie(name) {
+  		var matches = document.cookie.match(new RegExp(
+    	"(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+ 		 ));
+  		return matches ? decodeURIComponent(matches[1]) : undefined;
+	}
+
+	$source_code = 1;
+	if (getCookie('source_id')) {
+		$source_code = getCookie('source_id');
+	}
+
+	$sort_code = 0;
+	if (getCookie('sort_id')) {
+		$sort_code = getCookie('sort_id');
+	}
+
+var myDate=document.getElementById('d1').value;
+myDate=myDate.split(".");
+var newDate=myDate[1]+"/"+myDate[0]+"/"+myDate[2];
+
 	$('#searchTable').DataTable( {
 		searching: false,
 		ordering: false,
@@ -237,7 +275,7 @@
 		"bProcessing": true,
 		"bServerSide": true,
 // Надо вставить сюда вменяемую передачу параметров.
-		"sAjaxSource": "scripts/select_query.php?resp=<?php echo $_GET['q']; ?>",  
+		"sAjaxSource": "scripts/select_query.php?resp=<?php echo $_GET['q']; ?>&source=" + $source_code + "&sort=" + $sort_code + "&date1=" + document.getElementById('d1').value + "&date2=" + document.getElementById('d2').value,
 		pagingType: 'simple_numbers',
 		language: {
 				paginate: {
@@ -247,15 +285,15 @@
 					last:     'Последний'
 				},
 				"info": "Страница _PAGE_ из _PAGES_"
-		}	
+		}
     } );
 	</script>
 	</div>
 	<div class="col-sm-2">
-		<?php 
-		    $page = 'page1'; 
-			include 'components/menu.php'; 
-		?>	
+		<?php
+		    $page = 'page1';
+			include 'components/menu.php';
+		?>
 	</div>
 	</div>
 	</div>
